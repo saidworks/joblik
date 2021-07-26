@@ -3,11 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Listing;
+use App\Models\Tag;
 
 class ListingController extends Controller
 {
     //index method
     public function index(){
-        return view('welcome');
+        $listings = Listing::where('is_active',true)
+            ->with('tags')
+            ->latest()
+            ->get();
+
+        $tags = Tag::orderBy('name')
+            ->get();
+        return view('listings.index',compact('listings','tags'));
     }
 }
