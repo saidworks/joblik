@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Listing;
 use App\Models\Tag;
+use Illuminate\Support\Str;
 
 class ListingController extends Controller
 {
     //index method
-    public function index(){
+    public function index(Request $request){
         $listings = Listing::where('is_active',true)
             ->with('tags')
             ->latest()
@@ -17,6 +18,37 @@ class ListingController extends Controller
 
         $tags = Tag::orderBy('name')
             ->get();
+
+        //search form logic
+        if($request->has('s')){
+            $query = strtolower($request->get('s'));
+            $listings = $listings->filter(function($listing) use($query){
+                if(Str::contains(strtolower($listing->title),$query)){
+                    return true;
+                }
+                if(Str::contains(strtolower($listing->company),$query)){
+                    return true;
+                }
+                if(Str::contains(strtolower($listing->location),$query)){
+                    return true;
+                }
+                if(Str::contains(strtolower($listing->content),$query)){
+                    return true;
+                }
+                return false;
+
+            });
+
+        }
+        // filter by tags
+        if($request->has('tag')){
+            $tag = $request->get('tag');
+            $listings = $listings->filter(function($listings) use($tag){
+                return $listings->tags->contains('slug',$tag);
+            });
+        }
+
+
         return view('listings.index',compact('listings','tags'));
     }
 }
