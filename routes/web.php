@@ -23,3 +23,4 @@ require __DIR__.'/auth.php';
 
 
 Route::get('/{listing}',[Controllers\ListingController::class,'show'])->name('listings.show');
+Route::get('/{listing}/apply',[Controllers\ListingController::class,'apply'])->name('listings.apply');

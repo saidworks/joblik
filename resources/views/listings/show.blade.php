@@ -21,7 +21,7 @@
                                 <strong>location :</strong> {{$listing->location}}<br>
                                 <strong>Company :</strong> {{$listing->company}}
                             </p>
-                            <a href="#" class="w-full bg-blue-500 mt-2 px-4 py-3 rounded text-gray-200 font-semibold hover:bg-blue-600 transition duration-200 each-in-out">APPLY NOW</a>
+                            <a href="{{route('listings.apply',$listing->slug)}}" class="w-full bg-blue-500 mt-2 px-4 py-3 rounded text-gray-200 font-semibold hover:bg-blue-600 transition duration-200 each-in-out">APPLY NOW</a>
                         </div>
                     </div>
                 </div>
