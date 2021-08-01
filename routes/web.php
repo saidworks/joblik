@@ -14,6 +14,7 @@ use App\Http\Controllers;
 */
 
 Route::get('/',[Controllers\ListingController::class,'index'])->name('listings.index');
+Route::get('/new',[Controllers\ListingController::class,'create'])->name('listings.create');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -21,6 +22,8 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-
+// show listing
 Route::get('/{listing}',[Controllers\ListingController::class,'show'])->name('listings.show');
+//apply to listing
 Route::get('/{listing}/apply',[Controllers\ListingController::class,'apply'])->name('listings.apply');
+
