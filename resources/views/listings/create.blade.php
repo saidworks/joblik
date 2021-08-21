@@ -66,6 +66,7 @@
                                 required />
                         </div>
                     </div>
+                    @endguest
                     <div class="mb-4 mx-2">
                         <x-label for="title" value="Job Title" />
                         <x-input
@@ -139,20 +140,54 @@
                         </label>
                     </div>
                     <div class="mb-6 mx-2">
-                        <div id="card-element"></div>
+                        <div id="card-element">
+
+                        </div>
                     </div>
                     <div class="mb-2 mx-2">
                         @csrf
-                        <input
-                            type="hidden"
-                            id="payment_method_id"
-                            name="payment_method_id"
-                            value="">
-                        <button type="submit" id="form_submit" class="block w-full items-center bg-indigo-500 text-white border-0 py-2 focus:outline-none hover:bg-indigo-600 rounded text-base mt-4 md:mt-0">Pay + Continue</button>
+                        <input type="hidden"
+                        id="payment_method_id"
+                        name="payment_method_id"
+                        value=""
+                        >
+                        <button
+                        type="submit"
+                        id="form_submit"
+                        class="block w-full items-center bg-indigo-500 text-white border-0 py-2 focus:outline-none hover:bg-indigo-600 rounded text-base mt-4 md:mt-0"
+                        >Pay + Continue</button>
                     </div>
-                @endguest
             </form>
             </div>
         </div>
     </section>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripe = Stripe("{{ env('STRIPE_KEY') }}");
+        const elements = stripe.elements();
+        const cardElement = elements.create('card',{
+            classes : {
+                base: 'StripeElement rounded-md shadow-sm bg-white px-2 py-3  border border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 block mt-1 w-full'
+            }
+
+        });
+        cardElement.mount('#card-element');
+        // validate card informations
+        document.getElementById('form-submit').addEventListener('click', async(e) => {
+            e.preventDefault();
+
+            // structured object
+            const { paymentMethod, error } = await stripe.createPaymentMethod('card', cardElement,{}
+            );
+
+            if (error) {
+                alert(error.message);
+            } else{
+                document.getElementById('payment_method_id').value = paymentMethod.id;
+                document.getElementById('payment_form').submit();
+            }
+
+        })
+
+    </script>
 </x-app-layout>
